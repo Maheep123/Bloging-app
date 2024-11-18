@@ -1,11 +1,12 @@
 import { AppBar, Toolbar, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // Get the current route
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
@@ -18,8 +19,10 @@ const Navbar = () => {
         return () => unsubscribe();
     }, []);
 
-    // Render nothing if the user is not authenticated
-    if (!isAuthenticated) {
+    // List of routes where the Navbar should not be shown
+    const hiddenRoutes = ['/signin', '/signup'];
+
+    if (!isAuthenticated || hiddenRoutes.includes(location.pathname)) {
         return null;
     }
 
